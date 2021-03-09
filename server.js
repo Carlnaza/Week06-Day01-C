@@ -1,77 +1,68 @@
 const express = require('express')
 const app = express()
+let PORT = 3000
 
-const users = require('./users.js')
+// Fake Dabatase
+const movies = require('./movies.js')
 
 app.use(express.urlencoded({ extended: true }))
 app.use(express.json())
 
-// GET is you GET back DATA
-app.get('/users', (req, res) => {
+// Get movies from database
+app.get('/api/movies', (req, res) => {
 
     res.json({
         status: 200,
-        data: users
+        data: movies
     })
-
 })
 
-// PUT is you UPDATE DATA
-app.put('/users', (req, res) => {
-    // console.log(req.body)
-    // console.log(req.params)
+app.get('/api/movies/random_movie', (req, res) => {
 
-    //     let users = [
-    //         {
-    //             name: 'John Doe',
-    //             age: 21
-    //         },
-    //         {
-    //             name: 'Jane Doe',
-    //             age: 21
-    //         }
-    //     ]
-
-    // users[].name = req.body.name
-    // users[].age = req.body.age
-
-    // res.json({
-    //     status: 200,
-    //     data: users
-    // })
-
-
+    res.json({
+        status: 200,
+        data: movies[Math.floor(Math.random() * movies.length)]
+    })
 })
 
-// // POST is you CREATE DATA
-app.post('/users', (req, res) => {
-    
-    let newUser = {
-        name: req.body.name,
-        age: req.body.age
+// Add new movies to our database
+app.post('/api/movies', (req, res) => {
+
+    let newMovie = {
+        "title": req.body.title,
+        "director": req.body.director
     }
 
-    users.push(newUser)
+    movies.push(newMovie)
 
-    res.json({
-        status: 200,
-        data: users
-    })
+    res.sendStatus(200)
 
 })
 
-// // DETEL is you DELETE DATA
-app.delete('/users/:index', (req, res) => {
+// Delete a movie from our database
+app.delete('/api/movies/:index', (req, res) => {
 
-    users.splice(req.params.index, 1)
+    movies.splice(req.params.index, 1)
 
-    res.json({
-        status: 200,
-        data: users
-    })
+    res.sendStatus(200)
 
 })
 
-app.listen(3000, () => {
-    console.log("Server is running on port 3000")
+// Update a movie from our database
+app.put('/api/movies/:index', (req, res) => {
+
+    let updates = {
+        "title": req.body.title,
+        "director": req.body.director
+    }
+
+    movies[req.params.index] = updates
+
+    res.sendStatus(200)
+})
+
+
+
+app.listen(PORT, () => {
+    console.log(`Your server is now listening ${PORT}`)
 })
