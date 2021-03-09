@@ -61,7 +61,16 @@ app.post('/users', (req, res) => {
 })
 
 // // DETEL is you DELETE DATA
-// app.delete()
+app.delete('/users/:index', (req, res) => {
+
+    users.splice(req.params.index, 1)
+
+    res.json({
+        status: 200,
+        data: users
+    })
+
+})
 
 app.listen(3000, () => {
     console.log("Server is running on port 3000")
